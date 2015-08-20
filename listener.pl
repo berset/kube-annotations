@@ -60,9 +60,8 @@ while (1) {
                     #print Dumper $old;
                     my @cols = ('message');
                     my @points = (
-                        sprintf("scale %s from: %d to: %d current: %d",
+                        sprintf("scale %s to: %d current: %d",
                             $rc_name,
-                            $old->{'spec'}->{'replicas'},
                             $new->{'spec'}->{'replicas'},
                             $old->{'status'}->{'replicas'}
                             )
