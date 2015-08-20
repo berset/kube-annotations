@@ -75,7 +75,7 @@ while (1) {
                     my $influxdb_message = {
                         name => 'events',
                         columns => \@cols,
-                        points => \@points
+                        points => [\@points]
                         };
                     push @events, $influxdb_message;
                     $rcs->{$rc_name} = $new;
