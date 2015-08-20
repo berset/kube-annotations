@@ -4,8 +4,8 @@ use JSON;
 use Data::Dumper;
 
 # Read
-my $kube_master = $ENV{'KUBERNETES_SERVICE_HOST'}//'127.0.0.1';
-my $kube_port = $ENV{'KUBERNETES_SERVICE_PORT'}//'8080';
+my $kube_master = $ENV{'KUBERNETES_MASTER'}//'127.0.0.1';
+my $kube_port = $ENV{'KUBERNETES_MASTER_PORT'}//'8080';
 my $ns = 'default';
 # Write
 my $influxdb = 'cadvisor-influxdb';
