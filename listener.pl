@@ -84,6 +84,64 @@ while (1) {
                     die;
                 }
                 $rv = $event->{'object'}->{'metadata'}->{'resourceVersion'};
+            } elsif ($event->{'type'} eq 'DELETED') {
+                eval {
+                    my $rc_name = $event->{'object'}->{'metadata'}->{'name'};
+                    my $old = $rcs->{$rc_name};
+                    my $new = $event->{'object'};
+                    my @cols = ('message');
+                    my @points = (
+                        sprintf("deleted %s",
+                            $rc_name
+                            )
+                        );
+                    # TODO add labels
+                    for my $k (keys %{$new->{'metadata'}->{'labels'}}) {
+                        push @cols, $k;
+                        push @points, $new->{'metadata'}->{'labels'}->{$k};
+                    }
+                    my $influxdb_message = {
+                        name => 'events',
+                        columns => \@cols,
+                        points => [\@points]
+                        };
+                    push @events, $influxdb_message;
+                    delete $rcs->{$rc_name};
+                };
+                if ($@) {
+                    print "bad data: '",$row,"'\n";
+                    die;
+                }
+                $rv = $event->{'object'}->{'metadata'}->{'resourceVersion'};
+            } elsif ($event->{'type'} eq 'ADDED') {
+                eval {
+                    my $rc_name = $event->{'object'}->{'metadata'}->{'name'};
+                    my $old = $rcs->{$rc_name};
+                    my $new = $event->{'object'};
+                    my @cols = ('message');
+                    my @points = (
+                        sprintf("added %s",
+                            $rc_name
+                            )
+                        );
+                    # TODO add labels
+                    for my $k (keys %{$new->{'metadata'}->{'labels'}}) {
+                        push @cols, $k;
+                        push @points, $new->{'metadata'}->{'labels'}->{$k};
+                    }
+                    my $influxdb_message = {
+                        name => 'events',
+                        columns => \@cols,
+                        points => [\@points]
+                        };
+                    push @events, $influxdb_message;
+                    $rcs->{$rc_name} = $new;
+                };
+                if ($@) {
+                    print "bad data: '",$row,"'\n";
+                    die;
+                }
+                $rv = $event->{'object'}->{'metadata'}->{'resourceVersion'};
             } else {
                 die Dumper $event;
             }
